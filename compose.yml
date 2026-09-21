@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: interaction-receiver-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-interaction_receiver}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-interaction_receiver}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-interaction_receiver} -d ${POSTGRES_DB:-interaction_receiver}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./ai
+    image: interaction-receiver:local
+    container_name: interaction-receiver-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      DEBUG: ${DEBUG:-False}
+      PROJECT_NAME: ${PROJECT_NAME:-Interaction Receiver}
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-interaction_receiver}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-interaction_receiver}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      AVALAI_API_KEY: ${AVALAI_API_KEY:-}
+      AVALAI_API_KEY_4O: ${AVALAI_API_KEY_4O:-}
+      AVALAI_BASE_URL: ${AVALAI_BASE_URL:-https://api.avalapis.ir/v1}
+      AVALAI_MODEL: ${AVALAI_MODEL:-gpt-4o-mini}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost:8000}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - logs:/app/logs
+    command: >
+      sh -c "
+      python -c 'from app.core.database import Base, engine; Base.metadata.create_all(bind=engine)' &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2 --access-log --log-level info
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+  logs:

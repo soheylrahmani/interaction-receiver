@@ -1,0 +1,20 @@
+*.pyc
+__pycache__/
+*.sqlite3
+db.sqlite3
+
+# Secrets — never commit. Only .env.example belongs in git.
+.env
+!.env.example
+ai/.env
+
+# Virtualenvs and local data
+ai/.venv/
+ai/venv/
+ai/data/
+*.log
+ai/logs/*.log
+
+# Optional SQL dumps / backups (do not publish production data)
+postgres/init/*.dump
+postgres/init/*.sql

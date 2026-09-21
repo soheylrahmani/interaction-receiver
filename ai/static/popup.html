@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Retail Action Recorder</title>
+  <style>
+    body { font-family: Arial, sans-serif; width: 250px; padding: 10px; }
+    label { display: block; margin-top: 10px; }
+    input { width: 100%; margin-top: 2px; }
+    textarea { width: 100%; margin-top: 2px; height: 60px; resize: vertical; }
+    button { margin-top: 10px; width: 100%; }
+    .info { margin-top: 10px; font-size: 12px; color: #555; }
+  </style>
+</head>
+<body>
+  <label>Retail ID:
+    <input type="text" id="retail_id" />
+  </label>
+  <label>Session ID:
+    <input type="text" id="session_id" />
+  </label>
+  <label>Client Recommendation:
+    <textarea id="client_recommendation" placeholder="Enter client recommendation or notes here..."></textarea>
+  </label>
+  <button id="generate">Generate New Session ID</button>
+  <button id="start">Start Recording</button>
+  <button id="stop">Stop Recording</button>
+  <div class="info">
+    <div>Current Retail ID: <span id="current_retail_id"></span></div>
+    <div>Current Session ID: <span id="current_session_id"></span></div>
+    <div>Recording Status: <span id="recording_status"></span></div>
+  </div>
+  <!-- JS moved to popup.js for CSP compliance -->
+  <script src="popup.js"></script>
+</body>
+</html> 

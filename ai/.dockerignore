@@ -1,0 +1,12 @@
+.venv
+venv
+__pycache__
+*.pyc
+.env
+.git
+data
+logs
+*.log
+extension_deployment
+*.zip
+README.md
