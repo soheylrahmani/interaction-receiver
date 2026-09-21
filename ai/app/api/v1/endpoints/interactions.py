@@ -539,7 +539,8 @@ async def extension_action(
 ):
     """
     Receive and store/update user actions from the browser extension.
-    Expects JSON: {retail_id, session_id, actions, url (optional), client_recommendation (optional)}
+    Expects JSON: {retail_id or user_id, session_id, actions, url, client_recommendation (optional)}.
+    interaction-tracker sends user_id; it is stored as retail_id.
     """
     data = await request.json()
     try:

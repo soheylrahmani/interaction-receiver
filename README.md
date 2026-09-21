@@ -88,7 +88,7 @@ Compose already runs `create_all` on startup, so migrations are optional for a f
 
 ```json
 {
-  "retail_id": 1,
+  "user_id": 1,
   "session_id": "string",
   "client_recommendation": "string",
   "actions": [
@@ -103,7 +103,7 @@ Compose already runs `create_all` on startup, so migrations are optional for a f
 }
 ```
 
-The public tracker uses `user_id` in its README example. This API field is `retail_id` (integer). Map or rename in the extension if you keep that tracker payload as-is.
+[interaction-tracker](https://github.com/soheylrahmani/interaction-tracker) sends `user_id`. This API also accepts `retail_id`. Either value must be an integer; it is stored as `retail_id`.
 
 ## Configuration
 

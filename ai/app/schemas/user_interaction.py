@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from app.core.pydantic_config import BaseModelConfig
@@ -60,11 +60,20 @@ class ScanResponse(BaseModel, BaseModelConfig):
 
 class UserInteractionCreate(BaseModel, BaseModelConfig):
     session_id: str
-    retail_id: int
+    retail_id: Optional[int] = None
+    user_id: Optional[int] = None  # alias sent by interaction-tracker
     url: str
     actions: List[Action]
     html_content: Optional[str] = None
     client_recommendation: Optional[str] = None
+
+    @model_validator(mode="after")
+    def accept_tracker_user_id(self):
+        if self.retail_id is None and self.user_id is None:
+            raise ValueError("Either retail_id or user_id is required")
+        if self.retail_id is None:
+            self.retail_id = self.user_id
+        return self
 
 class UserInteractionBasicResponse(BaseModel, BaseModelConfig):
     id: int

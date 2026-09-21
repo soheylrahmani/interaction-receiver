@@ -15,7 +15,6 @@ function updateDisplay() {
 document.getElementById('generate').onclick = function() {
   document.getElementById('session_id').value = uuidv4();
 };
-// حذف دکمه Save و افزودن مدیریت ضبط
 function updateRecordingStatus() {
   chrome.storage.local.get(['isRecording'], function(result) {
     document.getElementById('recording_status').textContent = result.isRecording ? 'Active' : 'Inactive';
